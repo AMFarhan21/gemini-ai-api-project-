@@ -27,9 +27,11 @@ form.addEventListener('submit', async function (e) {
   // 2. Show a temporary "Thinking..." message and store the element
   const botPlaceholder = appendMessage('bot', 'Thinking...');
 
+  console.log("PRODUCTION ENDPOINT: ", process.env.PRODUCTION_ENDPOINT)
+
   try {
     // 3. Send the user's message to the backend
-    const response = await fetch(`${process.env.PRODUCTION_ENDPOINT}/chat`, {
+    const response = await fetch("https://gemini-ai-api-project.onrender.com/chat", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
