@@ -3,16 +3,22 @@ import express from "express"
 import multer from "multer";
 import fs from "fs/promises"
 import { GoogleGenAI } from "@google/genai";
+import cors from "cors"
+import path from "path";
+import { fileURLToPath } from "url";
 
 dotenv.config()
 
-
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 const app = express()
 const upload = multer()
 
 
 app.use(express.json())
+app.use(cors())
+app.use(express.static(path.join(__dirname, 'public')))
 
 
 const PORT = 3000
@@ -143,6 +149,25 @@ app.post("/generate-from-audio", upload.single("audio"), async(req, res) => {
 
     res.json({result: extractText(resp)})
 
+  } catch (error) {
+    res.status(500).json({error: error.message})
+  }
+})
+
+
+app.post("/chat", async(req, res) => {
+  try {
+    const {message} = req.body;
+    if(!Array.isArray(message)) throw new Error("messages must be an array")
+    const contents = message.map(msg => ({
+      role: msg.role,
+      parts: [{text: msg.content}]
+    }))
+    const resp = await ai.models.generateContent({
+      model: GEMINI_MODEL,
+      contents
+    })
+    res.json({result: extractText(resp)})
   } catch (error) {
     res.status(500).json({error: error.message})
   }
