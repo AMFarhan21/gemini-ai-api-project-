@@ -29,7 +29,7 @@ form.addEventListener('submit', async function (e) {
 
   try {
     // 3. Send the user's message to the backend
-    const response = await fetch("http://localhost:3000/chat", {
+    const response = await fetch(`${process.env.PRODUCTION_ENDPOINT}/chat`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
